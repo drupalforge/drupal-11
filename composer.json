@@ -94,6 +94,6 @@
         }
     },
     "require-dev": {
-        "drush/drush": "^13.0"
+        "drush/drush": "^13.3"
     }
 }
