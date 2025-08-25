@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 jobs:
   build-application:
-    uses: drupalforge/docker_publish_action/.github/workflows/docker-publish.yml@main
+    uses: drupalforge/docker_publish_action/.github/workflows/docker-publish.yml@develop
     with:
       dockerhub_username: ${{ vars.DOCKERHUB_USERNAME }}
     secrets:
