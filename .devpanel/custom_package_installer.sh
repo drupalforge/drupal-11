@@ -4,8 +4,8 @@
 # You can install any service here to support your project
 # Please make sure you run apt update before install any packages
 # Example:
-# - sudo apt-get update
-# - sudo apt-get install nano
+# - apt-get update
+# - apt-get install nano
 #
 # ----------------------------------------------------------------------
 if [ -n "$DEBUG_SCRIPT" ]; then
@@ -14,20 +14,24 @@ fi
 
 # Install APT packages.
 if ! command -v npm >/dev/null 2>&1; then
-  sudo apt-get update
-  sudo apt-get install -y jq nano npm
+  apt-get update
+  apt-get install -y jq nano npm
 fi
 
 PECL_UPDATED=false
 # Install APCU extension. Bypass question about enabling internal debugging.
 if ! php --ri apcu > /dev/null 2>&1; then
-  $PECL_UPDATED || sudo pecl update-channels && PECL_UPDATED=true
-  sudo pecl install apcu <<< ''
-  echo 'extension=apcu.so' | sudo tee /usr/local/etc/php/conf.d/apcu.ini
+  $PECL_UPDATED || pecl update-channels && PECL_UPDATED=true
+  pecl install apcu <<< ''
+  echo 'extension=apcu.so' > /usr/local/etc/php/conf.d/apcu.ini
 fi
 # Install uploadprogress extension.
 if ! php --ri uploadprogress > /dev/null 2>&1; then
-  $PECL_UPDATED || sudo pecl update-channels && PECL_UPDATED=true
-  sudo pecl install uploadprogress
-  echo 'extension=uploadprogress.so' | sudo tee /usr/local/etc/php/conf.d/uploadprogress.ini
+  $PECL_UPDATED || pecl update-channels && PECL_UPDATED=true
+  pecl install uploadprogress
+  echo 'extension=uploadprogress.so' > /usr/local/etc/php/conf.d/uploadprogress.ini
+fi
+# Reload Apache if it's running.
+if $PECL_UPDATED && /etc/init.d/apache2 status > /dev/null; then
+  /etc/init.d/apache2 reload
 fi

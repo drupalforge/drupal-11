@@ -23,7 +23,6 @@ if [ ! -d "$STATIC_FILES_PATH" ]; then
   mkdir -p $STATIC_FILES_PATH
 fi
 
-
 #== Composer install.
 if [[ -f "$APP_ROOT/composer.json" ]]; then
   cd $APP_ROOT && composer install
