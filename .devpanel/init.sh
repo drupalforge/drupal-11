@@ -49,13 +49,6 @@ if [ ! -d config/sync ]; then
   time mkdir -p config/sync
 fi
 
-#== Generate hash salt.
-if [ ! -f .devpanel/salt.txt ]; then
-  echo
-  echo 'Generate hash salt.'
-  time openssl rand -hex 32 > .devpanel/salt.txt
-fi
-
 #== Install Drupal.
 echo
 if [ -z "$(drush status --field=db-status)" ]; then
