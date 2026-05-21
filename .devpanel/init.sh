@@ -12,6 +12,9 @@ TIMEFORMAT=%lR
 # Install regardless of security audit.
 export COMPOSER_NO_AUDIT=1
 export COMPOSER_NO_BLOCKING=1
+# Keep deprecated var for compatibility with Composer versions where
+# COMPOSER_NO_BLOCKING/--no-blocking is not supported yet.
+export COMPOSER_NO_SECURITY_BLOCKING=1
 # For faster performance, don't install dev dependencies.
 export COMPOSER_NO_DEV=1
 
@@ -34,7 +37,7 @@ else
   echo
 fi
 # If update fails, change it to install.
-time composer -n update --no-dev --no-progress
+time composer -n update --no-progress
 
 #== Create the private files directory.
 if [ ! -d private ]; then
