@@ -5,12 +5,10 @@
 /composer.json
 /composer.lock
 /config/
-/LICENSE.txt
-/logs/
-/packages.json
-/patches.lock.json
+/LICENSE*
+/logs/*
+!/logs/.gitkeep
 /private/
-/README.md
 /recipes/
 /vendor/
 /web/

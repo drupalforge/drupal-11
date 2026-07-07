@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+export PATH="$APP_ROOT/vendor/bin:$PATH"
 if [ -n "${DEBUG_SCRIPT:-}" ]; then
   set -x
 fi
@@ -36,21 +37,24 @@ else
   time source .devpanel/composer_setup.sh
   echo
 fi
-# If update fails, change it to install.
 time composer -n update --no-progress
 
 #== Create the private files directory.
 if [ ! -d private ]; then
   echo
   echo 'Create the private files directory.'
-  time mkdir private
+  time mkdir -m 775 private
+else
+  sudo chmod 775 -R private
 fi
 
 #== Create the config sync directory.
 if [ ! -d config/sync ]; then
   echo
   echo 'Create the config sync directory.'
-  time mkdir -p config/sync
+  time mkdir -pm 775 config/sync
+else
+  sudo chmod 775 -R config
 fi
 
 #== Install Drupal.
@@ -66,12 +70,18 @@ fi
 #== Warm up caches.
 echo
 echo 'Run cron.'
-time drush cron
+time dr cron
 echo
 echo 'Populate caches.'
 time drush cache:warm &> /dev/null || :
 time .devpanel/warm
 time .devpanel/warm /user/login
+
+#== Fix ownership for strict permissions.
+echo
+echo 'Fix ownership for strict permissions.'
+time sudo chmod 775 -R web/sites/default/files
+time sudo chown -R ${APACHE_RUN_USER:=www-data} web/sites/default/files private config/sync
 
 #== Finish measuring script time.
 INIT_DURATION=$SECONDS
