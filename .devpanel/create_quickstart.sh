@@ -23,7 +23,7 @@ export PATH="$APP_ROOT/vendor/bin:$PATH"
 DUMPS_DIR=/tmp/devpanel/quickstart/dumps
 mkdir -p $DUMPS_DIR
 mkdir -p .devpanel/dumps
-dr cr
+drush cr
 
 # Step 1 - Export database.
 cd $APP_ROOT

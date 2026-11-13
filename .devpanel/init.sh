@@ -43,18 +43,14 @@ time composer -n update --no-progress
 if [ ! -d private ]; then
   echo
   echo 'Create the private files directory.'
-  time mkdir -m 775 private
-else
-  sudo chmod 775 -R private
+  time mkdir -m 2775 private
 fi
 
 #== Create the config sync directory.
 if [ ! -d config/sync ]; then
   echo
   echo 'Create the config sync directory.'
-  time mkdir -pm 775 config/sync
-else
-  sudo chmod 775 -R config
+  time mkdir -pm 2775 config/sync
 fi
 
 #== Install Drupal.
@@ -70,7 +66,7 @@ fi
 #== Warm up caches.
 echo
 echo 'Run cron.'
-time dr cron
+time drush cron
 echo
 echo 'Populate caches.'
 time drush cache:warm &> /dev/null || :
@@ -80,8 +76,8 @@ time .devpanel/warm /user/login
 #== Fix ownership for strict permissions.
 echo
 echo 'Fix ownership for strict permissions.'
-time sudo chmod 775 -R web/sites/default/files
-time sudo chown -R ${APACHE_RUN_USER:=www-data} web/sites/default/files private config/sync
+time sudo chmod 2775 -R web/sites/default/files private config/sync
+time sudo chown -R ${APACHE_RUN_USER:=www-data}:${APACHE_RUN_GROUP:=www-data} web/sites/default/files private config/sync
 
 #== Finish measuring script time.
 INIT_DURATION=$SECONDS

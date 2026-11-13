@@ -27,15 +27,16 @@ if [ -z "$(drush status --field=db-status)" ]; then
   fi
 fi
 
-if [[ -n "$DB_SYNC_VOL" ]]; then
+if [[ -n "${DB_SYNC_VOL:-}" ]]; then
   if [[ ! -f "../build/.devpanel/init-container.sh" ]]; then
+    sudo rm -rf ../build/lost+found
     echo 'Sync volume...'
     if [[ -n "$DRUPALFORGE_DEVCONTAINER" ]]; then
       # Preserve source permissions, but ensure rsync-created directories remain
       # user-writable so it can continue copying nested files on fresh volumes.
       sudo rsync -a --chmod=Du+w --ignore-existing --exclude .git --exclude .devpanel/dumps ./ ../build
     else
-      sudo rsync -av --delete --delete-excluded --exclude .devpanel/dumps ./ ../build
+      sudo rsync -a --delete --ignore-existing --exclude .devpanel/dumps ./ ../build
     fi
   fi
 fi
@@ -43,7 +44,7 @@ fi
 drush -n updb
 echo
 echo 'Run cron.'
-dr cron
+drush cron
 echo
 echo 'Populate caches.'
 drush cache:warm &> /dev/null || :
@@ -53,4 +54,4 @@ drush cache:warm &> /dev/null || :
 #== Fix ownership for strict permissions.
 echo
 echo 'Fix ownership for strict permissions.'
-time sudo chown -R ${APACHE_RUN_USER:=www-data} web/sites/default/files private config/sync
+sudo chown -R ${APACHE_RUN_USER:=www-data}:${APACHE_RUN_GROUP:=www-data} ../build/web/sites/default/files ../build/private ../build/config/sync
